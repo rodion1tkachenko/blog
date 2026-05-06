@@ -8,7 +8,17 @@ export default function App() {
         <BrowserRouter>
             <nav style={styles.nav}>
                 <Link to="/">Home</Link>
-                <Link to="/admin">Admin</Link>
+
+                {!token && <Link to="/login">Login</Link>}
+
+                {token && (
+                    <>
+                        <Link to="/admin">Admin</Link>
+                        <button onClick={handleLogout} style={styles.button}>
+                            Logout
+                        </button>
+                    </>
+                )}
             </nav>
 
             <Routes>
@@ -19,6 +29,12 @@ export default function App() {
         </BrowserRouter>
     );
 }
+const token = localStorage.getItem("token");
+
+const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+};
 
 const styles = {
     nav: {
@@ -26,5 +42,13 @@ const styles = {
         gap: 20,
         padding: 10,
         background: "#111",
+    },
+    button: {
+        background: "red",
+        color: "white",
+        border: "none",
+        padding: "6px 10px",
+        cursor: "pointer",
+        borderRadius: 4
     }
 };

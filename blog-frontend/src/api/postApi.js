@@ -5,12 +5,26 @@ export async function getPosts() {
     return res.json();
 }
 
+// export async function createPost(post) {
+//     const res = await fetch(`${BASE_URL}/admin/posts`, {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Authorization": "Basic " + btoa("admin:password")
+//         },
+//         body: JSON.stringify(post)
+//     });
+//
+//     return res.json();
+// }
 export async function createPost(post) {
-    const res = await fetch(`${BASE_URL}/admin/posts`, {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch("http://localhost:8080/api/admin/posts", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Basic " + btoa("admin:password")
+            "Authorization": "Bearer " + token
         },
         body: JSON.stringify(post)
     });

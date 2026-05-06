@@ -1,7 +1,14 @@
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
 import { createPost } from "../api/postApi";
 
 export default function Admin() {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        return <Navigate to="/login" />;
+    }
+
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
 

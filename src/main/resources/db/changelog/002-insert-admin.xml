@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="2" author="rodion">
+
+        <insert tableName="users">
+
+            <column name="username" value="admin"/>
+
+            <!-- password = admin -->
+            <column name="password"
+                    value="$2a$10$WHk1S9sJAKB4WKexqSukY.lT8D66HOWaEU.ErHsKdPRhUwYzvPmWq"/>
+
+            <column name="role" value="ADMIN"/>
+
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

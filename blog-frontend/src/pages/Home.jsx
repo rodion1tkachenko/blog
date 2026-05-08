@@ -1,8 +1,35 @@
 import { useEffect, useState } from "react";
 import { getPosts } from "../api/postApi";
+import { sendFeedback } from "../api/feedbackApi";
 
 export default function Home() {
     const [posts, setPosts] = useState([]);
+
+    const [form, setForm] = useState({
+        name: "",
+        email: "",
+        message: ""
+    });
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            await sendFeedback(form);
+
+            alert("Message sent!");
+
+            setForm({
+                name: "",
+                email: "",
+                message: ""
+            });
+
+        } catch (err) {
+            console.error(err);
+            alert("Error sending message");
+        }
+    };
 
     useEffect(() => {
         getPosts()
@@ -30,10 +57,53 @@ export default function Home() {
                         <p style={styles.content}>{post.content}</p>
                     </div>
                 ))}
+
+                <div style={styles.feedbackCard}>
+                    <h2>Feedback</h2>
+
+                    <form onSubmit={handleSubmit} style={styles.form}>
+
+                        <input
+                            type="text"
+                            placeholder="Your name"
+                            value={form.name}
+                            onChange={(e) =>
+                                setForm({...form, name: e.target.value})
+                            }
+                            style={styles.input}
+                        />
+
+                        <input
+                            type="email"
+                            placeholder="Your email"
+                            value={form.email}
+                            onChange={(e) =>
+                                setForm({...form, email: e.target.value})
+                            }
+                            style={styles.input}
+                        />
+
+                        <textarea
+                            placeholder="Your message"
+                            value={form.message}
+                            onChange={(e) =>
+                                setForm({...form, message: e.target.value})
+                            }
+                            style={styles.textarea}
+                        />
+
+                        <button type="submit" style={styles.sendButton}>
+                            Send
+                        </button>
+
+                    </form>
+                </div>
             </div>
         </div>
     );
 }
+
+
 
 const styles = {
     page: {
@@ -83,5 +153,45 @@ const styles = {
         fontSize: "15px",
         lineHeight: "1.6",
         color: "#374151"
+    },
+    feedbackCard: {
+        background: "#ffffff",
+        padding: "20px",
+        borderRadius: "14px",
+        marginTop: "30px",
+        boxShadow: "0 4px 14px rgba(0,0,0,0.08)"
+    },
+
+    form: {
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px"
+    },
+
+    input: {
+        padding: "12px",
+        borderRadius: "8px",
+        border: "1px solid #d1d5db",
+        fontSize: "14px"
+    },
+
+    textarea: {
+        padding: "12px",
+        borderRadius: "8px",
+        border: "1px solid #d1d5db",
+        minHeight: "120px",
+        fontSize: "14px",
+        resize: "vertical"
+    },
+
+    sendButton: {
+        background: "#111827",
+        color: "white",
+        border: "none",
+        padding: "12px",
+        borderRadius: "8px",
+        cursor: "pointer",
+        fontWeight: "600"
     }
 };
+

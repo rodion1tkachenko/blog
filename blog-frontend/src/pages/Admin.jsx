@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { createPost } from "../api/postApi";
+import { getFeedback } from "../api/feedbackApi";
 
 export default function Admin() {
     const token = localStorage.getItem("token");
+    const [feedbackList, setFeedbackList] = useState([]);
 
     if (!token) {
         return <Navigate to="/login" />;
@@ -20,6 +22,12 @@ export default function Admin() {
         setContent("");
         alert("Post created!");
     };
+
+    useEffect(() => {
+        getFeedback()
+            .then(data => setFeedbackList(data))
+            .catch(console.error);
+    }, []);
 
     return (
         <div style={styles.page}>
@@ -44,6 +52,28 @@ export default function Admin() {
                     <button onClick={handleSubmit} style={styles.button}>
                         Create post
                     </button>
+                </div>
+
+                <div style={styles.card}>
+                    <h2>Feedback</h2>
+
+                    {feedbackList.length === 0 && (
+                        <p>No feedback yet</p>
+                    )}
+
+                    {feedbackList.map((item, index) => (
+                        <div key={index} style={{
+                            padding: "10px",
+                            borderBottom: "1px solid #e5e7eb"
+                        }}>
+                            <div style={{ fontWeight: "600" }}>
+                                {item.name} ({item.email})
+                            </div>
+                            <div style={{ fontSize: "14px", marginTop: "4px" }}>
+                                {item.message}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

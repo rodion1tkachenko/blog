@@ -31,3 +31,21 @@ export async function createPost(post) {
 
     return res.json();
 }
+export async function deletePost(id) {
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+        `http://localhost:8080/api/admin/posts/${id}`,
+        {
+            method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("Failed to delete post");
+    }
+}

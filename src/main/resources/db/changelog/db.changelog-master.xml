@@ -8,5 +8,6 @@
 
     <include file="db/changelog/001-create-users.xml"/>
     <include file="db/changelog/002-insert-admin.xml"/>
+    <include file="db/changelog/003-create-feedback.xml"/>
 
 </databaseChangeLog>

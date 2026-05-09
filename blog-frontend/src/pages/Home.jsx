@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { getPosts } from "../api/postApi";
+import { getPosts, deletePost } from "../api/postApi";
 import { sendFeedback } from "../api/feedbackApi";
 
 export default function Home() {
     const [posts, setPosts] = useState([]);
+    const token = localStorage.getItem("token");
 
     const [form, setForm] = useState({
         name: "",
@@ -30,7 +31,28 @@ export default function Home() {
             alert("Error sending message");
         }
     };
+    const handleDelete = async (id) => {
 
+        const confirmed = window.confirm(
+            "Delete this post?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+
+            await deletePost(id);
+
+            setPosts(posts.filter(post => post.id !== id));
+
+        } catch (err) {
+
+            console.error(err);
+            alert("Failed to delete post");
+        }
+    };
     useEffect(() => {
         getPosts()
             .then(data => {
@@ -55,6 +77,14 @@ export default function Home() {
 
                         <h2 style={styles.title}>{post.title}</h2>
                         <p style={styles.content}>{post.content}</p>
+                        {token && (
+                            <button
+                                onClick={() => handleDelete(post.id)}
+                                style={styles.deleteButton}
+                            >
+                                Delete
+                            </button>
+                        )}
                     </div>
                 ))}
 
@@ -189,6 +219,16 @@ const styles = {
         color: "white",
         border: "none",
         padding: "12px",
+        borderRadius: "8px",
+        cursor: "pointer",
+        fontWeight: "600"
+    },
+    deleteButton: {
+        marginTop: "14px",
+        background: "#ef4444",
+        color: "white",
+        border: "none",
+        padding: "8px 12px",
         borderRadius: "8px",
         cursor: "pointer",
         fontWeight: "600"

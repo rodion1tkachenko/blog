@@ -2,11 +2,17 @@ import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { createPost } from "../api/postApi";
 import { getFeedback } from "../api/feedbackApi";
+import { getProfile, updateProfile } from "../api/profileApi";
 
 export default function Admin() {
     const token = localStorage.getItem("token");
     const [feedbackList, setFeedbackList] = useState([]);
-
+    const [profile, setProfile] = useState({
+        fullName: "",
+        university: "",
+        bio: "",
+        telegram: ""
+    });
     if (!token) {
         return <Navigate to="/login" />;
     }
@@ -23,10 +29,40 @@ export default function Admin() {
         alert("Post created!");
     };
 
+    const handleProfileSave = async () => {
+
+        try {
+
+            await updateProfile(profile);
+
+            alert("Profile updated!");
+
+        } catch (err) {
+
+            console.error(err);
+
+            alert("Failed to update profile");
+
+        }
+
+    };
+
     useEffect(() => {
+
         getFeedback()
             .then(data => setFeedbackList(data))
             .catch(console.error);
+
+        getProfile()
+            .then(data => {
+
+                if (data) {
+                    setProfile(data);
+                }
+
+            })
+            .catch(console.error);
+
     }, []);
 
     return (
@@ -52,6 +88,68 @@ export default function Admin() {
                     <button onClick={handleSubmit} style={styles.button}>
                         Create post
                     </button>
+                </div>
+                <div style={styles.card}>
+
+                    <h2 style={styles.sectionTitle}>
+                        Edit profile
+                    </h2>
+
+                    <input
+                        value={profile.fullName}
+                        onChange={(e) =>
+                            setProfile({
+                                ...profile,
+                                fullName: e.target.value
+                            })
+                        }
+                        placeholder="Full name"
+                        style={styles.input}
+                    />
+
+                    <input
+                        value={profile.university}
+                        onChange={(e) =>
+                            setProfile({
+                                ...profile,
+                                university: e.target.value
+                            })
+                        }
+                        placeholder="University"
+                        style={styles.input}
+                    />
+
+                    <textarea
+                        value={profile.bio}
+                        onChange={(e) =>
+                            setProfile({
+                                ...profile,
+                                bio: e.target.value
+                            })
+                        }
+                        placeholder="Bio"
+                        style={styles.textarea}
+                    />
+
+                    <input
+                        value={profile.telegram}
+                        onChange={(e) =>
+                            setProfile({
+                                ...profile,
+                                telegram: e.target.value
+                            })
+                        }
+                        placeholder="Telegram"
+                        style={styles.input}
+                    />
+
+                    <button
+                        onClick={handleProfileSave}
+                        style={styles.button}
+                    >
+                        Save profile
+                    </button>
+
                 </div>
 
                 <div style={styles.card}>
@@ -138,5 +236,9 @@ const styles = {
         fontSize: "15px",
         fontWeight: "600",
         cursor: "pointer"
-    }
+    },
+    sectionTitle: {
+        marginBottom: "16px",
+        color: "#111827"
+    },
 };

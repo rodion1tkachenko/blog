@@ -1,15 +1,8 @@
 const BASE_URL = "http://localhost:8080/api";
 
 export async function getProfile() {
-    const token = localStorage.getItem("token");
 
-    const response = await fetch(`${BASE_URL}/profile`, {
-        method: "GET",
-        headers: {
-            "Accept": "application/json",
-            ...(token ? { "Authorization": `Bearer ${token}` } : {})
-        }
-    });
+    const response = await fetch(`${BASE_URL}/profile`);
 
     if (!response.ok) {
         throw new Error(`Failed to fetch profile: ${response.status}`);
@@ -19,14 +12,14 @@ export async function getProfile() {
 }
 
 export async function updateProfile(profile) {
+
     const token = localStorage.getItem("token");
 
     const response = await fetch(`${BASE_URL}/admin/profile`, {
         method: "PUT",
         headers: {
-            "Accept": "application/json",
             "Content-Type": "application/json",
-            ...(token ? { "Authorization": `Bearer ${token}` } : {})
+            "Authorization": "Bearer " + token
         },
         body: JSON.stringify(profile)
     });

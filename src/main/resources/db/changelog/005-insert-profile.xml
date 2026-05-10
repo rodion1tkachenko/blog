@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="4" author="rodion">
+
+        <insert tableName="profile">
+
+            <column name="full_name" value="Родион Ткаченко"/>
+
+            <column name="university" value="БГТУ им. Шухова"/>
+
+            <column name="bio"
+                    value="Я знаю, что я ничего не знаю (c) Сократ"/>
+
+            <column name="telegram" value="@o0000qq"/>
+
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

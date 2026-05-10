@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getPosts, deletePost } from "../api/postApi";
 import { sendFeedback } from "../api/feedbackApi";
+import { getProfile } from "../api/profileApi";
 
 export default function Home() {
     const [posts, setPosts] = useState([]);
@@ -11,6 +12,7 @@ export default function Home() {
         email: "",
         message: ""
     });
+    const [profile, setProfile] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -54,29 +56,69 @@ export default function Home() {
         }
     };
     useEffect(() => {
+
         getPosts()
             .then(data => {
+
                 const sorted = [...data].sort(
                     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
                 );
+
                 setPosts(sorted);
+
             })
             .catch(console.error);
+
+        getProfile()
+            .then(data => setProfile(data))
+            .catch(console.error);
+
     }, []);
 
     return (
         <div style={styles.page}>
             <div style={styles.container}>
+
                 <h1 style={styles.header}>My Blog</h1>
+
+                {profile && (
+
+                    <div style={styles.profileCard}>
+
+                        <h2 style={styles.profileName}>
+                            {profile.fullName || "Unknown author"}
+                        </h2>
+
+                        <div style={styles.profileUniversity}>
+                            <strong>University:</strong> {profile.university}
+                        </div>
+
+                        <p style={styles.profileBio}>
+                            <strong>About:</strong> {profile.bio}
+                        </p>
+
+                        <div style={styles.profileTelegram}>
+                            <strong>Contact:</strong> {profile.telegram}
+                        </div>
+
+                    </div>
+                )}
 
                 {posts.map(post => (
                     <div key={post.id} style={styles.card}>
+
                         <div style={styles.meta}>
                             #{post.id} • {new Date(post.createdAt).toLocaleString()}
                         </div>
 
-                        <h2 style={styles.title}>{post.title}</h2>
-                        <p style={styles.content}>{post.content}</p>
+                        <h2 style={styles.title}>
+                            {post.title}
+                        </h2>
+
+                        <p style={styles.content}>
+                            {post.content}
+                        </p>
+
                         {token && (
                             <button
                                 onClick={() => handleDelete(post.id)}
@@ -85,11 +127,15 @@ export default function Home() {
                                 Delete
                             </button>
                         )}
+
                     </div>
                 ))}
 
                 <div style={styles.feedbackCard}>
-                    <h2>Feedback</h2>
+
+                   <h2 style={{ color: "#111827", fontWeight: "700" }}>
+                       Поделись мнением с автором блога
+                   </h2>
 
                     <form onSubmit={handleSubmit} style={styles.form}>
 
@@ -127,7 +173,9 @@ export default function Home() {
                         </button>
 
                     </form>
+
                 </div>
+
             </div>
         </div>
     );
@@ -232,6 +280,37 @@ const styles = {
         borderRadius: "8px",
         cursor: "pointer",
         fontWeight: "600"
-    }
+    },
+    profileCard: {
+        background: "#ffffff",
+        padding: "24px",
+        borderRadius: "16px",
+        marginBottom: "20px",
+        boxShadow: "0 4px 14px rgba(0,0,0,0.08)"
+    },
+
+    profileName: {
+        margin: 0,
+        fontSize: "28px",
+        color: "#111827"
+    },
+
+    profileUniversity: {
+        marginTop: "8px",
+        color: "#6b7280",
+        fontWeight: "600"
+    },
+
+    profileBio: {
+        marginTop: "16px",
+        lineHeight: "1.7",
+        color: "#374151"
+    },
+
+    profileTelegram: {
+        marginTop: "14px",
+        color: "#2563eb",
+        fontWeight: "600"
+    },
 };
 
